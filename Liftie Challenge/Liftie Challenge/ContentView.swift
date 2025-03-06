@@ -14,15 +14,8 @@ struct ContentView: View {
                 HStack{
                     Text("\(lift.liftName)")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    if(!lift.hasBeenBeerd){
-                        NavigationLink("Not Beerd", value: lift)
-                            .frame(width: 100, alignment: .trailing)
-                    }
-                    else
-                    {
-                        NavigationLink("Beerd", value: lift)
-                            .frame(width: 100, alignment: .trailing)
-                    }
+                    NavigationLink(lift.hasBeenBeerd ? "Beerd" : "Not Beerd", value: lift)
+                        .frame(width: 100, alignment: .trailing)
                     
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
@@ -30,14 +23,38 @@ struct ContentView: View {
             }
             .navigationTitle("Chairs")
             .navigationDestination(for: Lift.self){ lift in
-                Text(lift.liftName)
-                if(lift.hasBeenBeerd){
-                    Text("Chair has been Beerd")
-                }else{
-                    Text("Chair has not been Beerd")
-                }
+                LiftView(lift: lift)
             }
         }
+    }
+}
+
+struct LiftView: View {
+    var lift: Lift
+    
+    var body: some View {
+        Text(lift.liftName)
+        if(lift.hasBeenBeerd){
+            Text("Chair has been Beerd")
+        }else{
+            Text("Chair has not been Beerd")
+        }
+        // Button to initiate recording
+        Button(action: {
+            // Action for button tap
+            print("Chug button tapped")
+        }) {
+            Text("Chug")
+                .font(.headline)
+                .foregroundColor(.white) // Text color
+                .padding() // Padding around the text
+                .frame(maxWidth: .infinity) // Make the button stretch across the screen
+                .background(Color.blue) // Button background color
+                .cornerRadius(25) // Rounded corners
+                .padding() // Padding outside the button
+        }
+        .frame(height: 50) // Set the button's height
+        
     }
 }
 
