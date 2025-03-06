@@ -1,0 +1,43 @@
+# macOS System Files
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Swift Package Manager
+/.build
+/Packages
+Package.resolved
+
+# Xcode
+DerivedData/
+xcuserdata/
+*.xcscmblueprint
+*.xccheckout
+*.xcworkspace
+!default.xcworkspace
+
+# Carthage (if used)
+Carthage/Build/
+
+# CocoaPods (if used)
+Pods/
+*.xcworkspace
+podfile.lock
+
+# Fastlane (if used)
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Temporary files
+*.swp
+*.swo
+*.swn
+*.log
+*.tmp
+
+# Simulator and Cache Files
+Library/Caches/
+*.moved-aside
+*.lock
