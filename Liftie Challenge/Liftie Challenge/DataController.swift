@@ -19,7 +19,7 @@ class DataController: ObservableObject {
     var container: NSPersistentContainer!
 
     func loadPersistentStores() {
-        container = NSPersistentContainer(name: "Model") // Name of the .xcdatamodeld file
+        container = NSPersistentContainer(name: "MountainData") // Name of the .xcdatamodeld file
         container.loadPersistentStores { description, error in
             if let error = error {
                 fatalError("Unresolved error \(error)")
@@ -36,8 +36,8 @@ class DataController: ObservableObject {
         let fetchRequest: NSFetchRequest<LCLift> = LCLift.fetchRequest()
         
         do {
-            let locations = try context.fetch(fetchRequest)
-            if locations.isEmpty {
+            let lifts = try context.fetch(fetchRequest)
+            if lifts.isEmpty {
                 // If there are no locations, insert predefined data
                 addPredefinedLocations()
             }
@@ -50,25 +50,27 @@ class DataController: ObservableObject {
     private func addPredefinedLocations() {
         let context = container.viewContext
         
-        let lift1 = LCLift(context: context)
-        lift1.name = "Lift 1"
+        let liftNames = [
+            "Moose Creek Quad Chair",
+            "Arial Tram",
+            "Union Pass Quad Chair",
+            "Sublette Quad Chair",
+            "Thunder Quad Chair",
+            "Marmot Double Chair",
+            "Bridger Gondola",
+            "Sweetwater Gondola",
+            "Casper Quad Chair",
+            "Teton Quad Chair",
+            "Teewinot Quad Chair",
+            "Apres vous Quad Chair",
+            "Eagle's Rest Chair"
+        ]
+
         
-//        let location1 = Location(context: context)
-//        location1.name = "Paris"
-//        location1.latitude = 48.8566
-//        location1.longitude = 2.3522
-//        
-//        let location2 = Location(context: context)
-//        location2.name = "New York"
-//        location2.latitude = 40.7128
-//        location2.longitude = -74.0060
-//        
-//        let location3 = Location(context: context)
-//        location3.name = "Tokyo"
-//        location3.latitude = 35.6762
-//        location3.longitude = 139.6503
-        
-        // Add more locations if needed...
+        for liftName in liftNames {
+            let newLift = LCLift(context: context)
+            newLift.name = liftName
+        }
 
         // Save context
         do {
