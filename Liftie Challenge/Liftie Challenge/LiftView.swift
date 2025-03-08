@@ -8,12 +8,17 @@
 
 import SwiftUI
 import CoreData
+import UniformTypeIdentifiers
+
 
 struct LiftView: View {
     var lift: LCLift
+    @State private var isCameraPresented = false
+    @State private var videoURL: URL?
     
     var body: some View {
         Text(lift.name ?? "Electric chair")
+            
         if(lift.beerd){
             Text("Chair has been Beerd")
         }else{
@@ -39,6 +44,7 @@ struct LiftView: View {
             Button(action: {
                 // Action for button tap
                 print("Video incrimination tapped")
+                isCameraPresented.toggle()
             }) {
                 Text("Incriminate with video")
                     .font(.headline)
@@ -50,6 +56,12 @@ struct LiftView: View {
                     .padding() // Padding outside the button
             }
             .frame(height: 50) // Set the button's height
+        }
+        .sheet(isPresented: $isCameraPresented) {
+            CameraPicker(isPresented: $isCameraPresented) { url in
+                // Handle the recorded video URL
+                self.videoURL = url
+            }
         }
     }
 }
