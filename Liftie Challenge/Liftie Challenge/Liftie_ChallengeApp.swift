@@ -15,10 +15,11 @@ struct Liftie_ChallengeApp: App {
     init() {
         dataController.loadPersistentStores()
     }
-    
     var body: some Scene {
         WindowGroup {
-            ContentView().environment(\.managedObjectContext, dataController.container.viewContext)
+            ContentView()
+                .preferredColorScheme(.light)
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }
