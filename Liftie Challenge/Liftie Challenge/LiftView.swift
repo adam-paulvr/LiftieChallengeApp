@@ -14,7 +14,7 @@ import UniformTypeIdentifiers
 struct LiftView: View {
     var lift: LCLift
     @State private var isCameraPresented = false
-    @State private var videoURL: URL?
+    @State private var media: MediaType?
     
     var body: some View {
         VStack{
@@ -45,13 +45,31 @@ struct LiftView: View {
                 }
                 .padding()
             }
-            .sheet(isPresented: $isCameraPresented) {
-                CameraPicker(isPresented: $isCameraPresented) { url in
-                    // Handle the recorded video URL
-                    self.videoURL = url
+            .fullScreenCover(isPresented: $isCameraPresented) {
+                CameraPicker(isPresented: $isCameraPresented) { media in
+                    self.media = media
                 }
             }
         }
+        
+        /**START-DELETE: Placeholder proving media is returned **/
+        
+        // Handling and displaying the returned media
+        if let media = media {
+            switch media {
+            case .photo(let image):
+                // Display the photo if it's an image
+                Image(uiImage: image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 200, height: 200)
+            case .video(let url):
+                // Display the video URL
+                Text("Video URL: \(url.absoluteString)")
+            }
+        }
+        
+        /**END-DELETE: Placeholder proving media is returned **/
     }
 }
 

@@ -10,6 +10,12 @@ import SwiftUI
 import AVFoundation
 import UIKit
 
+// Enum for ease of passing back either an image or video.
+enum MediaType {
+    case photo(UIImage)
+    case video(URL)
+}
+
 // Step 1: Create a UIViewControllerRepresentable struct for UIImagePickerController
 struct CameraPicker: UIViewControllerRepresentable {
     class Coordinator: NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
@@ -22,7 +28,11 @@ struct CameraPicker: UIViewControllerRepresentable {
         // Delegate method to handle when the user finishes recording a video
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let mediaURL = info[.mediaURL] as? URL {
-                parent.didFinishRecording?(mediaURL) // Pass the recorded video URL back
+                // If it's a video, pass the URL back using the didChug closure
+                parent.didChug?(.video(mediaURL))
+            } else if let image = info[.originalImage] as? UIImage {
+                // If it's a photo, pass the image back using the didChug closure
+                parent.didChug?(.photo(image))
             }
             parent.isPresented = false // Dismiss the picker
         }
@@ -35,7 +45,7 @@ struct CameraPicker: UIViewControllerRepresentable {
 
     // Step 2: Bindings and properties
     @Binding var isPresented: Bool
-    var didFinishRecording: ((URL) -> Void)?
+    var didChug: ((MediaType) -> Void)?
 
     func makeCoordinator() -> Coordinator {
         return Coordinator(parent: self)
