@@ -9,9 +9,17 @@ import SwiftUI
 
 @main
 struct Liftie_ChallengeApp: App {
+    
+    let dataController = DataController.shared
+    
+    init() {
+        dataController.loadPersistentStores()
+    }
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .preferredColorScheme(.light)
+                .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
 }

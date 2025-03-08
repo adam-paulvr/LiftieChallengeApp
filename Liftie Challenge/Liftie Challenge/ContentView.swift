@@ -6,36 +6,31 @@
 //
 
 import SwiftUI
+import CoreData
 
 struct ContentView: View {
+    // Fetch all Lift entities from Core Data
+        @FetchRequest(
+            entity: LCLift.entity(),
+            sortDescriptors: [NSSortDescriptor(keyPath: \LCLift.name, ascending: true)]
+        ) var lifts: FetchedResults<LCLift>
+    
     var body: some View {
         NavigationStack {
-            List(LiftData.lifts, id: \.self) {lift in
+            List(lifts, id: \.self) {lift in
                 HStack{
-                    Text("\(lift.liftName)")
+                    Text(lift.name ?? "Electric chair")
                         .frame(maxWidth: .infinity, alignment: .leading)
-                    if(!lift.hasBeenBeerd){
-                        NavigationLink("Not Beerd", value: lift)
-                            .frame(width: 100, alignment: .trailing)
-                    }
-                    else
-                    {
-                        NavigationLink("Beerd", value: lift)
-                            .frame(width: 100, alignment: .trailing)
-                    }
+                    NavigationLink(lift.beerd ? "Beerd" : "Not Beerd", value: lift)
+                        .frame(width: 100, alignment: .trailing)
                     
                 }
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
-                .background(lift.hasBeenBeerd ? Color.green : Color.fromRGB(255, 144, 179))
+                .background(lift.beerd ? Color.green : Color.fromRGB(255, 144, 179))
             }
             .navigationTitle("Chairs")
-            .navigationDestination(for: Lift.self){ lift in
-                Text(lift.liftName)
-                if(lift.hasBeenBeerd){
-                    Text("Chair has been Beerd")
-                }else{
-                    Text("Chair has not been Beerd")
-                }
+            .navigationDestination(for: LCLift.self){ lift in
+                LiftView(lift: lift)
             }
         }
     }
