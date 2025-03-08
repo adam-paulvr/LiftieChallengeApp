@@ -254,7 +254,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Liftie Challenge/Preview Content\"";
-				DEVELOPMENT_TEAM = Q9VLWR3QZD;
+				DEVELOPMENT_TEAM = B98762QKMB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need your permission for photo evidence";
@@ -269,7 +269,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.PaulVR.Liftie-Challenge2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ChunkyStudios.Liftie-Challenge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -288,7 +288,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Liftie Challenge/Preview Content\"";
-				DEVELOPMENT_TEAM = Q9VLWR3QZD;
+				DEVELOPMENT_TEAM = B98762QKMB;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_KEY_NSCameraUsageDescription = "We need your permission for photo evidence";
@@ -303,7 +303,7 @@
 					"@executable_path/Frameworks",
 				);
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = "com.PaulVR.Liftie-Challenge2";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.ChunkyStudios.Liftie-Challenge";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
