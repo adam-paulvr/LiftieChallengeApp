@@ -9,6 +9,7 @@
 import SwiftUI
 import CoreData
 import UniformTypeIdentifiers
+import _AVKit_SwiftUI
 
 
 struct LiftView: View {
@@ -55,8 +56,7 @@ struct LiftView: View {
                             // Display the photo if it's an image
                             ImageCardView(image: image)
                         case .video(let url):
-                            // Display the video URL
-                            Text("Video URL: \(url.absoluteString)")
+                            VideoCardView(url: url)
                         }
                     }
                     
@@ -113,7 +113,6 @@ struct LiftView: View {
 
 // For showing a square image.
 struct ImageCardView: View {
-    @State private var cardWidth: CGFloat = 0
     let image: UIImage
 
     var body: some View {
@@ -122,6 +121,22 @@ struct ImageCardView: View {
             .overlay(
                 Image(uiImage: image)
                     .resizable()
+                    .scaledToFill()
+            )
+            .clipShape(RoundedRectangle(cornerRadius: 15))
+            .shadow(radius: 10)
+            .padding(20)
+    }
+}
+
+struct VideoCardView: View {
+    let url: URL
+
+    var body: some View {
+        Rectangle()
+            .aspectRatio(1, contentMode: .fit)
+            .overlay(
+                VideoPlayerView(videoURL: url)
                     .scaledToFill()
             )
             .clipShape(RoundedRectangle(cornerRadius: 15))
