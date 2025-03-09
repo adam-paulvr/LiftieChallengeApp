@@ -11,6 +11,11 @@ import UniformTypeIdentifiers
 
 
 struct MapLiftView: View {
+    
+    @State private var showResetConfirmation = false // Controls modal visibility
+
+    let dataController = DataController.shared
+
     // Fetch all Lift entities from Core Data
         @FetchRequest(
             entity: LCLift.entity(),
@@ -26,13 +31,16 @@ struct MapLiftView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 1200, height: 725) // Adjust size to make it scrollable
-                        .overlay(
-                            Color.clear
-                                .contentShape(Rectangle()) // Ensures the whole area is tappable
-                                .onTapGesture { location in
-                                    print("Tapped at x: \(location.x), y: \(location.y)")
-                                }
-                        )
+                    
+                    // added purely to idenfity where on the map to place the buttons
+//                        .overlay(
+//                            Color.clear
+//                                .contentShape(Rectangle()) // Ensures the whole area is tappable
+//                                .onTapGesture { location in
+//                                    print("Tapped at x: \(location.x), y: \(location.y)")
+//                                }
+//                        )
+                    
                     Spacer()
                     ForEach(lifts) { lift in
                         NavigationLink(destination: LiftView(lift: lift)){
@@ -42,28 +50,38 @@ struct MapLiftView: View {
                         }
                         .position(x: CGFloat(lift.xVal), y: CGFloat(lift.yVal))
                     }
+                    Button(action: {
+                        showResetConfirmation = true // Show confirmation modal
+                    })
+                    {
+                        Text("Rehydrate")
+                            .font(.headline)
+                            .foregroundColor(.white)
+                            .padding()
+                            .background(Color.red.opacity(0.4))
+                            .cornerRadius(10)
+                    }
+                    .position(x: 1092, y: 673)
+                    .padding()
+                
                 }
             }
             .navigationTitle("Hydration Map")
+            .alert("Confirm Rehydration?", isPresented: $showResetConfirmation) {
+                Button("Cancel", role: .cancel) { } // Just closes modal
+                Button("Yes Rehydrate", role: .destructive) {
+                    // reset data for test devices
+                    dataController.loadPersistentStores() // Resets the persistent store
+                                                          // Will likely need more granular control over data
+                    showResetConfirmation = false // Close modal after reset
+                }
+            } message: {
+                Text("Are you sure you want to rehydrate? All current records of hydration will be deleted.")
+            }
         }
     }
 }
 
-// Destination View for Navigation
-struct DetailView: View {
-    var title: String
-
-    var body: some View {
-        VStack {
-            Text(title)
-                .font(.largeTitle)
-                .padding()
-            Spacer()
-        }
-        .navigationTitle(title)
-        .navigationBarTitleDisplayMode(.inline)
-    }
-}
 
 struct ContentView_Previews: PreviewProvider {
     static var previews: some View {

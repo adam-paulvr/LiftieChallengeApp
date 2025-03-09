@@ -20,8 +20,8 @@ extension LCLift {
     @NSManaged public var beerd: Bool
     @NSManaged public var videoURL: String?
     @NSManaged public var pictureURL: String?
-    @NSManaged public var xVal: Int
-    @NSManaged public var yVal: Int
+    @NSManaged public var xVal: Int // Added to remeber button placement on map
+    @NSManaged public var yVal: Int // Super brittle and need to better implement for full app
 
 }
 

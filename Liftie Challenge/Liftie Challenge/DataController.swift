@@ -3,7 +3,7 @@
 //  Liftie Challenge
 //
 //  Created by Seth Barrios on 3/6/25.
-//
+//  Fucked with by Adam Loo on 3/8/25
 
 
 import CoreData
@@ -37,8 +37,7 @@ class DataController: ObservableObject {
         
         do {
             let lifts = try context.fetch(fetchRequest)
-            print(lifts.count)
-            if lifts.count < 13{
+            if lifts.isEmpty{
                 clearDirtyLocations()
                 // If there are no locations, insert predefined data
                 addPredefinedLocations()
@@ -49,6 +48,7 @@ class DataController: ObservableObject {
         }
     }
 
+    // new struct just for this temporary initialization
     struct baseLocation{
         var name: String
         var xVal: Int
@@ -59,7 +59,8 @@ class DataController: ObservableObject {
     private func addPredefinedLocations() {
         let context = container.viewContext
 
-        
+        // New base starting data that includes button positions on the map
+        // very static implementation. also felt like a dumbass writing Val over and over.
         let liftNameAndPositions = [
             baseLocation(name: "Thunder Quad Chair", xVal: 439, yVal: 298),
             baseLocation(name: "Sublette Quad Chair", xVal: 286, yVal: 164),
@@ -91,6 +92,9 @@ class DataController: ObservableObject {
         }
     }
     
+    // This delets the LCLift objects from local storage
+    // Needed becasue when updating from the string array to fuller baseLocation
+    //  existing data was stopping a reset from happening on app start.
     private func clearDirtyLocations() {
         let context = container.viewContext
         let fetchRequest: NSFetchRequest<NSFetchRequestResult> = LCLift.fetchRequest()
