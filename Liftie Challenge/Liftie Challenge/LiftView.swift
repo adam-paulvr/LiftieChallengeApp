@@ -15,6 +15,16 @@ import _AVKit_SwiftUI
 struct LiftView: View {
     @ObservedObject var lift: LCLift
     @State private var isCameraPresented = false
+    @Environment(\.managedObjectContext) private var context
+    
+    func saveLift() {
+        do {
+            try context.save()
+            print("Changes saved successfully!")
+        } catch {
+            print("Failed to save context: \(error)")
+        }
+    }
     
     var body: some View {
         
@@ -67,6 +77,8 @@ struct LiftView: View {
                         // TODO: Delete any media. We're just gonna let it build up lmao.
                         lift.pictureURL = nil
                         lift.videoURL = nil
+                        saveLift()
+                        
                     }) {
                         Text("I lied. Unchug.")
                             .font(.headline)
@@ -107,6 +119,7 @@ struct LiftView: View {
                         lift.videoURL = videoURL.absoluteString
                     }
                     lift.beerd = true
+                    saveLift()
                 }
             }
         }
