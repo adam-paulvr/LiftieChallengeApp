@@ -20,6 +20,8 @@ extension LCLift {
     @NSManaged public var beerd: Bool
     @NSManaged public var videoURL: String?
     @NSManaged public var pictureURL: String?
+    @NSManaged public var xVal: Int
+    @NSManaged public var yVal: Int
 
 }
 
