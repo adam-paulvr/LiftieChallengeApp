@@ -15,7 +15,6 @@ import _AVKit_SwiftUI
 struct LiftView: View {
     @ObservedObject var lift: LCLift
     @State private var isCameraPresented = false
-    @State private var media: MediaType?
     
     var body: some View {
         
@@ -50,12 +49,12 @@ struct LiftView: View {
             
             VStack{
                 if lift.beerd {
-                    if let media = media {
-                        switch media {
-                        case .photo(let imageURL):
-                            // Display the photo if it's an image
-                            ImageCardView(url: imageURL)
-                        case .video(let videoURL):
+                    if let pictureURLString = lift.pictureURL {
+                        if let pictureURL = URL(string: pictureURLString) {
+                            ImageCardView(url: pictureURL)
+                        }
+                    } else if let videoURLString = lift.videoURL {
+                        if let videoURL = URL(string: videoURLString) {
                             VideoCardView(url: videoURL)
                         }
                     }
@@ -65,8 +64,9 @@ struct LiftView: View {
                     Button(action: {
                         // Reset lift data
                         lift.beerd = false
-                        // TODO: Update lift media directly.
-                        media = nil
+                        // TODO: Delete any media. We're just gonna let it build up lmao.
+                        lift.pictureURL = nil
+                        lift.videoURL = nil
                     }) {
                         Text("I lied. Unchug.")
                             .font(.headline)
@@ -81,7 +81,7 @@ struct LiftView: View {
                     // Button to initiate recording
                     Button(action: {
                         // Action for button tap
-                        print("Video incrimination tapped")
+                        print("Chug tapped")
                         isCameraPresented.toggle()
                     }) {
                         Text("Chug")
@@ -100,7 +100,12 @@ struct LiftView: View {
             .padding(.top)
             .fullScreenCover(isPresented: $isCameraPresented) {
                 CameraPicker(isPresented: $isCameraPresented) { media in
-                    self.media = media
+                    switch media {
+                        case .photo(let imageURL):
+                        lift.pictureURL = imageURL.absoluteString
+                    case .video(let videoURL):
+                        lift.videoURL = videoURL.absoluteString
+                    }
                     lift.beerd = true
                 }
             }
