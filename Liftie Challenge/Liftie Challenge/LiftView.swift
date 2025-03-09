@@ -46,22 +46,22 @@ struct LiftView: View {
             .padding(.top, 50)
             .shadow(radius: 10) // Flavortown
             .rotationEffect(.degrees(-7)) // Apply a 10-degree rotation
-    
+            
             
             VStack{
                 if lift.beerd {
                     if let media = media {
                         switch media {
-                        case .photo(let image):
+                        case .photo(let imageURL):
                             // Display the photo if it's an image
-                            ImageCardView(image: image)
-                        case .video(let url):
-                            VideoCardView(url: url)
+                            ImageCardView(url: imageURL)
+                        case .video(let videoURL):
+                            VideoCardView(url: videoURL)
                         }
                     }
                     
                     Spacer()
-                
+                    
                     Button(action: {
                         // Reset lift data
                         lift.beerd = false
@@ -113,15 +113,22 @@ struct LiftView: View {
 
 // For showing a square image.
 struct ImageCardView: View {
-    let image: UIImage
-
+    let url: URL
+    
     var body: some View {
         Rectangle()
             .aspectRatio(1, contentMode: .fit)
             .overlay(
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
+                AsyncImage(url: url) { image in
+                            image
+                                .resizable()          // Makes the image resizable
+                                .scaledToFill()        // Ensures the aspect ratio is preserved
+                                .clipped()
+                        } placeholder: {
+                            ProgressView() // Placeholder while loading
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .frame(width: 50, height: 50)
+                        }
             )
             .clipShape(RoundedRectangle(cornerRadius: 15))
             .shadow(radius: 10)
@@ -131,7 +138,7 @@ struct ImageCardView: View {
 
 struct VideoCardView: View {
     let url: URL
-
+    
     var body: some View {
         Rectangle()
             .aspectRatio(1, contentMode: .fit)

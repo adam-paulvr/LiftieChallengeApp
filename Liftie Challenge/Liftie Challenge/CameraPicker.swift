@@ -12,7 +12,7 @@ import UIKit
 
 // Enum for ease of passing back either an image or video.
 enum MediaType {
-    case photo(UIImage)
+    case photo(URL)
     case video(URL)
 }
 
@@ -28,11 +28,22 @@ struct CameraPicker: UIViewControllerRepresentable {
         // Delegate method to handle when the user finishes recording a video
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
             if let mediaURL = info[.mediaURL] as? URL {
-                // If it's a video, pass the URL back using the didChug closure
-                parent.didChug?(.video(mediaURL))
+                // Copy the video to permanent storage and pass back via closure.
+                if let newVideoURL = MediaUtils.copyVideoToPermanentStorage(from: mediaURL) {
+                    print("Video is saved at: \(newVideoURL)")
+                    parent.didChug?(.video(mediaURL))
+                } else {
+                    print("Failed to save the video.")
+                }
             } else if let image = info[.originalImage] as? UIImage {
-                // If it's a photo, pass the image back using the didChug closure
-                parent.didChug?(.photo(image))
+                // Save image to permanent storage and pass back via closure.
+                let fileName = UUID().uuidString + ".png"
+                if let savedImageURL = MediaUtils.saveImageToPermanentStorage(image: image, fileName: fileName) {
+                    print("Image saved successfully at: \(savedImageURL)")
+                    parent.didChug?(.photo(savedImageURL))
+                } else {
+                    print("Failed to save the image.")
+                }
             }
             parent.isPresented = false // Dismiss the picker
         }
