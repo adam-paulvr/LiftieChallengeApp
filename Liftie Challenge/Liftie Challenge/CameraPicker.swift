@@ -55,6 +55,7 @@ struct CameraPicker: UIViewControllerRepresentable {
         let picker = UIImagePickerController()
         picker.delegate = context.coordinator
         picker.sourceType = .camera
+        picker.cameraDevice = .front
         picker.mediaTypes = [
             UTType.image.identifier,
             UTType.movie.identifier
