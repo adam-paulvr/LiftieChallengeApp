@@ -17,8 +17,7 @@ struct Liftie_ChallengeApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            ContentView()
-                .preferredColorScheme(.light)
+            MapLiftView() // Changed the starting target window group
                 .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }

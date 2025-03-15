@@ -10,6 +10,8 @@ import SwiftUI
 import CoreData
 import UniformTypeIdentifiers
 import _AVKit_SwiftUI
+import Photos
+
 
 
 struct LiftView: View {
@@ -53,6 +55,7 @@ struct LiftView: View {
                     .stroke(Color.white, lineWidth: 5) // Set outline color and width
             )
             .padding(.top, 50)
+
             .shadow(radius: 10) // Flavortown
             .rotationEffect(.degrees(-7)) // Apply a 10-degree rotation
             
@@ -70,6 +73,7 @@ struct LiftView: View {
                     }
                     
                     Spacer()
+
                     
                     Button(action: {
                         // Reset lift data
@@ -93,6 +97,7 @@ struct LiftView: View {
                     // Button to initiate recording
                     Button(action: {
                         // Action for button tap
+
                         print("Chug tapped")
                         isCameraPresented.toggle()
                     }) {
@@ -112,6 +117,7 @@ struct LiftView: View {
             .padding(.top)
             .fullScreenCover(isPresented: $isCameraPresented) {
                 CameraPicker(isPresented: $isCameraPresented) { media in
+
                     switch media {
                         case .photo(let imageURL):
                         lift.pictureURL = imageURL.absoluteString
@@ -129,6 +135,46 @@ struct LiftView: View {
     }
 }
 
+
+// Sorry Seth, its going in one file
+func saveImageToPhotos(_ image: UIImage) {
+    PHPhotoLibrary.requestAuthorization { status in
+        guard status == .authorized else {
+            print("Permission to access photo library denied")
+            return
+        }
+        
+        PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.creationRequestForAsset(from: image)
+        } completionHandler: { success, error in
+            if success {
+                print("Image saved successfully!")
+            } else {
+                print("Error saving image: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+}
+
+func saveVideoToPhotos(videoURL: URL) {
+    PHPhotoLibrary.requestAuthorization { status in
+        guard status == .authorized else {
+            print("Permission to access photo library denied")
+            return
+        }
+        
+        PHPhotoLibrary.shared().performChanges {
+            PHAssetChangeRequest.creationRequestForAssetFromVideo(atFileURL: videoURL)
+        } completionHandler: { success, error in
+            if success {
+                print("Video saved successfully!")
+            } else {
+                print("Error saving video: \(error?.localizedDescription ?? "Unknown error")")
+            }
+        }
+    }
+}
+
 // For showing a square image.
 struct ImageCardView: View {
     let url: URL
@@ -137,6 +183,7 @@ struct ImageCardView: View {
         Rectangle()
             .aspectRatio(1, contentMode: .fit)
             .overlay(
+
                 AsyncImage(url: url) { image in
                             image
                                 .resizable()          // Makes the image resizable
@@ -156,7 +203,7 @@ struct ImageCardView: View {
 
 struct VideoCardView: View {
     let url: URL
-    
+
     var body: some View {
         Rectangle()
             .aspectRatio(1, contentMode: .fit)
