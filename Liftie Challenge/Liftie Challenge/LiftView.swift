@@ -13,10 +13,20 @@ import _AVKit_SwiftUI
 import Photos
 
 
+
 struct LiftView: View {
     @ObservedObject var lift: LCLift
     @State private var isCameraPresented = false
-    @State private var media: MediaType?
+    @Environment(\.managedObjectContext) private var context
+    
+    func saveLift() {
+        do {
+            try context.save()
+            print("Changes saved successfully!")
+        } catch {
+            print("Failed to save context: \(error)")
+        }
+    }
     
     var body: some View {
         
@@ -45,28 +55,34 @@ struct LiftView: View {
                     .stroke(Color.white, lineWidth: 5) // Set outline color and width
             )
             .padding(.top, 50)
-            .shadow(radius: 10) // Flavortown <<< suck me daddy
+
+            .shadow(radius: 10) // Flavortown
             .rotationEffect(.degrees(-7)) // Apply a 10-degree rotation
-    
+            
             
             VStack{
                 if lift.beerd {
-                    if let media = media {
-                        switch media {
-                        case .photo(let image):
-                            // Display the photo if it's an image
-                            ImageCardView(image: image)
-                        case .video(let url):
-                            VideoCardView(url: url)
+                    if let pictureURLString = lift.pictureURL {
+                        if let pictureURL = URL(string: pictureURLString) {
+                            ImageCardView(url: pictureURL)
+                        }
+                    } else if let videoURLString = lift.videoURL {
+                        if let videoURL = URL(string: videoURLString) {
+                            VideoCardView(url: videoURL)
                         }
                     }
                     
                     Spacer()
+
+                    
                     Button(action: {
                         // Reset lift data
                         lift.beerd = false
-                        // TODO: Update lift media directly.
-                        media = nil
+                        // TODO: Delete any media. We're just gonna let it build up lmao.
+                        lift.pictureURL = nil
+                        lift.videoURL = nil
+                        saveLift()
+                        
                     }) {
                         Text("I lied. Unchug.")
                             .font(.headline)
@@ -81,7 +97,8 @@ struct LiftView: View {
                     // Button to initiate recording
                     Button(action: {
                         // Action for button tap
-                        print("Video incrimination tapped")
+
+                        print("Chug tapped")
                         isCameraPresented.toggle()
                     }) {
                         Text("Chug")
@@ -100,16 +117,15 @@ struct LiftView: View {
             .padding(.top)
             .fullScreenCover(isPresented: $isCameraPresented) {
                 CameraPicker(isPresented: $isCameraPresented) { media in
-                    self.media = media
-                    lift.beerd = true
-                    
-                    // ✅ Save the captured media to Photos Library
+
                     switch media {
-                    case .photo(let image):
-                        saveImageToPhotos(image)
-                    case .video(let url):
-                        saveVideoToPhotos(videoURL: url)
+                        case .photo(let imageURL):
+                        lift.pictureURL = imageURL.absoluteString
+                    case .video(let videoURL):
+                        lift.videoURL = videoURL.absoluteString
                     }
+                    lift.beerd = true
+                    saveLift()
                 }
             }
         }
@@ -161,15 +177,23 @@ func saveVideoToPhotos(videoURL: URL) {
 
 // For showing a square image.
 struct ImageCardView: View {
-    let image: UIImage
-
+    let url: URL
+    
     var body: some View {
         Rectangle()
             .aspectRatio(1, contentMode: .fit)
             .overlay(
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFill()
+
+                AsyncImage(url: url) { image in
+                            image
+                                .resizable()          // Makes the image resizable
+                                .scaledToFill()        // Ensures the aspect ratio is preserved
+                                .clipped()
+                        } placeholder: {
+                            ProgressView() // Placeholder while loading
+                                .progressViewStyle(CircularProgressViewStyle())
+                                .frame(width: 50, height: 50)
+                        }
             )
             .clipShape(RoundedRectangle(cornerRadius: 15))
             .shadow(radius: 10)
