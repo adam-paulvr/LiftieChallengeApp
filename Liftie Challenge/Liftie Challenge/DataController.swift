@@ -9,6 +9,11 @@
 import CoreData
 import SwiftUI
 
+// this would be the challenge class that represents a whole challenge
+class Challenge {
+    
+}
+
 class DataController: ObservableObject {
     static let shared = DataController() // Singleton pattern
     
@@ -108,4 +113,18 @@ class DataController: ObservableObject {
             print("Failed to clear locations: \(error)")
         }
     }
+    
+    // simulated data
+    
+    
+    
+    func getAllChallengeTypes() -> [String] {
+        return ["Liftie Challenges"]
+    }
+    
+    func getChallege(id: Int) -> Challenge {
+        let challenge = Challenge()
+        return challenge
+    }
 }
+

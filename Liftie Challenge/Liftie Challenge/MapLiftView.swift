@@ -31,16 +31,7 @@ struct MapLiftView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(width: 1200, height: 725) // Adjust size to make it scrollable
-                    
-                    // added purely to idenfity where on the map to place the buttons
-//                        .overlay(
-//                            Color.clear
-//                                .contentShape(Rectangle()) // Ensures the whole area is tappable
-//                                .onTapGesture { location in
-//                                    print("Tapped at x: \(location.x), y: \(location.y)")
-//                                }
-//                        )
-                    
+
                     Spacer()
                     ForEach(lifts) { lift in
                         NavigationLink(destination: LiftView(lift: lift)){

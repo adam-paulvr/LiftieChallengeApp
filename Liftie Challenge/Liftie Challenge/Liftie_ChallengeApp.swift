@@ -17,7 +17,8 @@ struct Liftie_ChallengeApp: App {
     }
     var body: some Scene {
         WindowGroup {
-            MapLiftView() // Changed the starting target window group
+            StartingIntroFlow()
+            //MapLiftView() // Changed the starting target window group
                 .environment(\.managedObjectContext, dataController.container.viewContext)
         }
     }
